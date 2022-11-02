@@ -11,7 +11,9 @@ Drawer drawerAppBarMenu(BuildContext context) {
           ),
           child: Text('Drawer Header'),
         ),
-        listTitle(Icons.menu, 'Lista de Notas', 'homepage', context)
+        listTitle(Icons.add, 'Nueva nota', 'newnote', context),
+        listTitle(Icons.menu, 'Lista de Notas', 'homepage', context),
+        listTitle(Icons.person, 'Creado por', 'homepage', context)
       ],
     ),
   );

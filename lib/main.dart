@@ -1,4 +1,5 @@
 import 'package:codigolimpionetforemost/screen/home_page.dart';
+import 'package:codigolimpionetforemost/screen/newnote_page.dart';
 import 'package:codigolimpionetforemost/screen/welcome_page.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const WelcomePage(),
         '/homepage': (context) => const HomePage(),
+        '/newnote': (context) => const NewNotePage(),
       },
     );
   }
