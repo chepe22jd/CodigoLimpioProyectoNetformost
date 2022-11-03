@@ -197,7 +197,6 @@ class _NewNotePageState extends State<NewNotePage> {
                         fecha: selectedDate.toString().substring(0, 10),
                         nota: controllerNota.text),
                   );
-
                   ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text("Nota agreada")));
                   cleanTextfield();

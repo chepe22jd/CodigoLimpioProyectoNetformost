@@ -26,9 +26,10 @@ class SqliteService {
         .update("notas", notas.toMap(), where: "id = ?", whereArgs: [notas.id]);
   }
 
-  static Future<List<Notas>> notas() async {
+  static Future<List<Notas>> notas(String orderByX) async {
     Database database = await _openDB();
-    final List<Map<String, dynamic>> notasMap = await database.query("notas");
+    final List<Map<String, dynamic>> notasMap =
+        await database.query("notas", orderBy: orderByX);
 
     return List.generate(
         notasMap.length,

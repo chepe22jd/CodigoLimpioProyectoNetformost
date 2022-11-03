@@ -15,20 +15,37 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  //lista para ordenar
+  static const menuItems = <String>[
+    'Nota',
+    'Fecha',
+  ];
+
+  final List<DropdownMenuItem<String>> _dropDownMenuItems = menuItems
+      .map(
+        (String value) => DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        ),
+      )
+      .toList();
+
+  String _btnSelect = 'Nota';
+
   //get lista de notas
   List<Notas> notas = [];
 
   @override
   void initState() {
-    cargaAnimales();
+    cargaNotas(_btnSelect);
     super.initState();
   }
 
-  cargaAnimales() async {
-    List<Notas> auxAnimal = await SqliteService.notas();
+  cargaNotas(String orderBy) async {
+    List<Notas> auxNotas = await SqliteService.notas(orderBy);
 
     setState(() {
-      notas = auxAnimal;
+      notas = auxNotas;
     });
   }
 
@@ -69,8 +86,38 @@ class _HomePageState extends State<HomePage> {
             SizedBox(
               height: height * 0.03,
             ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  const Text(
+                    'Ordernar por: ',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  DropdownButton(
+                    value: _btnSelect,
+                    onChanged: (String? newValue) {
+                      if (newValue != null) {
+                        setState(() {
+                          _btnSelect = newValue;
+                          cargaNotas(newValue.toString());
+                        });
+                      }
+                    },
+                    items: _dropDownMenuItems,
+                  ),
+                  SizedBox(
+                    width: width * 0.03,
+                  ),
+                  const Icon(Icons.list),
+                ],
+              ),
+            ),
             SizedBox(
-              height: height * 0.7,
+              height: height * 0.6,
               width: width * 0.9,
               child: ListView.builder(
                 itemCount: notas.length,
