@@ -28,8 +28,27 @@ class SqliteService {
 
   static Future<List<Notas>> notas(String orderByX) async {
     Database database = await _openDB();
-    final List<Map<String, dynamic>> notasMap =
-        await database.query("notas", orderBy: orderByX);
+    final List<Map<String, dynamic>> notasMap = await database.query(
+      "notas",
+      orderBy: orderByX,
+    );
+
+    return List.generate(
+        notasMap.length,
+        (i) => Notas(
+            id: notasMap[i]['id'],
+            nombreNota: notasMap[i]['nombreNota'],
+            fecha: notasMap[i]['fecha'],
+            nota: notasMap[i]['nota']));
+  }
+
+  static Future<List<Notas>> notasBuscar(
+      String orderByX, String keyword) async {
+    Database database = await _openDB();
+    final List<Map<String, dynamic>> notasMap = await database.query("notas",
+        orderBy: orderByX,
+        where: 'nombreNota LIKE ?',
+        whereArgs: ['%$keyword%']);
 
     return List.generate(
         notasMap.length,

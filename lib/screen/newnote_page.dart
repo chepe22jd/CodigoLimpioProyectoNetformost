@@ -66,6 +66,9 @@ class _NewNotePageState extends State<NewNotePage> {
     }
   }
 
+  //validator forem key
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     //variables para optener los size screen
@@ -79,144 +82,152 @@ class _NewNotePageState extends State<NewNotePage> {
 
     //formato de fecha
 //    dateController.text = selectedDate.toString().substring(0, 10);
-
     return Scaffold(
       key: _key,
       drawer: drawerAppBarMenu(context),
       appBar: appBarCode(context, _key),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(
-              height: height * 0.03,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: TextFormField(
-                //validador para que user escriba nota
-
-                controller: controllerNombreNota,
-                validator: (text) {
-                  if (text == null || text.isEmpty) {
-                    return 'Ingrese el nombre de la nota';
-                  }
-                  if (text.length < 2) {
-                    return 'Favor mayor a 2 caracteres';
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20)),
-                    labelText: 'Nombre de Nota',
-                    hintText: 'Nombre de Nota'),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              SizedBox(
+                height: height * 0.03,
               ),
-            ),
-            SizedBox(
-              height: height * 0.03,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: TextFormField(
-                //oculta teclado
-                showCursor: true,
-                readOnly: true,
-                validator: (text) {
-                  if (text == null || text.isEmpty) {
-                    return 'Seleccione una fecha';
-                  }
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: TextFormField(
+                  //validador para que user escriba nota
 
-                  return null;
-                },
-                onTap: () async {
-                  _selectDate(context);
-                },
-
-                controller: dateController,
-                keyboardType: TextInputType.datetime,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20)),
-                    labelText: 'Selecione fecha',
-                    hintText: 'Selecione fecha'),
-              ),
-            ),
-            SizedBox(
-              height: height * 0.03,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: TextFormField(
-                //validador para que user escriba nota
-                validator: (text) {
-                  if (text == null || text.isEmpty) {
-                    return 'Ingrese su nota porfavor';
-                  }
-                  if (text.length < 2) {
-                    return 'Favor mayor a 2 caracteres';
-                  }
-                  return null;
-                },
-                maxLines: 15,
-
-                keyboardType: TextInputType.multiline,
-                controller: controllerNota,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20)),
-                    labelText: 'Su Nota',
-                    hintText: 'Su Nota'),
-              ),
-            ),
-            SizedBox(
-              height: height * 0.03,
-            ),
-            //boton guarda nota
-            ElevatedButton(
-              onPressed: () async {
-                if (widget.id! > -1) {
-                  ///actializa datos
-                  SqliteService.update(
-                    Notas(
-                        id: widget.id,
-                        nombreNota: controllerNombreNota.text,
-                        fecha: selectedDate.toString().substring(0, 10),
-                        nota: controllerNota.text),
-                  );
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Nota actualizada")));
-                  cleanTextfield();
-                  Navigator.pushNamed(context, '/homepage');
-                }
-                //guarda un nuevo dato
-                else {
-                  SqliteService.insert(
-                    Notas(
-                        nombreNota: controllerNombreNota.text,
-                        fecha: selectedDate.toString().substring(0, 10),
-                        nota: controllerNota.text),
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Nota agreada")));
-                  cleanTextfield();
-                  Navigator.pushNamed(context, '/homepage');
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green[400],
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18.0),
+                  controller: controllerNombreNota,
+                  validator: (text) {
+                    if (text == null || text.isEmpty) {
+                      return 'Ingrese el nombre de la nota';
+                    }
+                    if (text.length < 2) {
+                      return 'Favor mayor a 2 caracteres';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      labelText: 'Nombre de Nota',
+                      hintText: 'Nombre de Nota'),
                 ),
               ),
-              child: const Text(
-                'Guardar nota',
-                style: TextStyle(fontSize: 20, color: Colors.white),
+              SizedBox(
+                height: height * 0.03,
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: TextFormField(
+                  //oculta teclado
+                  showCursor: true,
+                  readOnly: true,
+                  validator: (text) {
+                    if (text == null || text.isEmpty) {
+                      return 'Seleccione una fecha';
+                    }
+
+                    return null;
+                  },
+                  onTap: () async {
+                    _selectDate(context);
+                  },
+
+                  controller: dateController,
+                  keyboardType: TextInputType.datetime,
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      labelText: 'Selecione fecha',
+                      hintText: 'Selecione fecha'),
+                ),
+              ),
+              SizedBox(
+                height: height * 0.03,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: TextFormField(
+                  //validador para que user escriba nota
+                  validator: (text) {
+                    if (text == null || text.isEmpty) {
+                      return 'Ingrese su nota porfavor';
+                    }
+                    if (text.length < 2) {
+                      return 'Favor mayor a 2 caracteres';
+                    }
+                    return null;
+                  },
+                  maxLines: 15,
+
+                  keyboardType: TextInputType.multiline,
+                  controller: controllerNota,
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      labelText: 'Su Nota',
+                      hintText: 'Su Nota'),
+                ),
+              ),
+              SizedBox(
+                height: height * 0.03,
+              ),
+              //boton guarda nota
+              ElevatedButton(
+                onPressed: () async {
+                  //validar datos no basios
+                  if (_formKey.currentState!.validate()) {
+                    if (widget.id! > -1) {
+                      ///actializa datos
+                      SqliteService.update(
+                        Notas(
+                            id: widget.id,
+                            nombreNota: controllerNombreNota.text,
+                            fecha: selectedDate.toString().substring(0, 10),
+                            nota: controllerNota.text),
+                      );
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Nota actualizada")));
+                      cleanTextfield();
+                      Navigator.pushNamed(context, '/homepage');
+                    }
+                    //guarda un nuevo dato
+                    else {
+                      SqliteService.insert(
+                        Notas(
+                            nombreNota: controllerNombreNota.text,
+                            fecha: selectedDate.toString().substring(0, 10),
+                            nota: controllerNota.text),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Nota agreada")));
+                      cleanTextfield();
+                      Navigator.pushNamed(context, '/homepage');
+                    }
+                  } else {
+                    //retornar nada para que valide
+                    return;
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green[400],
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18.0),
+                  ),
+                ),
+                child: const Text(
+                  'Guardar nota',
+                  style: TextStyle(fontSize: 20, color: Colors.white),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

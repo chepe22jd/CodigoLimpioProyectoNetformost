@@ -1,6 +1,5 @@
-import 'package:codigolimpionetforemost/models/note.dart';
-import 'package:codigolimpionetforemost/screen/newnote_page.dart';
 import 'package:flutter/material.dart';
+import 'package:codigolimpionetforemost/screen/newnote_page.dart';
 
 Drawer drawerAppBarMenu(BuildContext context) {
   return Drawer(
@@ -9,13 +8,13 @@ Drawer drawerAppBarMenu(BuildContext context) {
       children: [
         const DrawerHeader(
           decoration: BoxDecoration(
-            color: Colors.blue,
+            color: Colors.green,
           ),
-          child: Text('Drawer Header'),
+          child: Text('NotePad Personal'),
         ),
         listTitleNota(Icons.add, 'Nueva nota', 'newnote', context),
         listTitle(Icons.menu, 'Lista de Notas', 'homepage', context),
-        listTitle(Icons.person, 'Creado por', 'homepage', context)
+        listTitle(Icons.person, 'Creado por', 'creadopor', context)
       ],
     ),
   );

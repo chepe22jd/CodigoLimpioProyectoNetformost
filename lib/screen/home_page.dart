@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:codigolimpionetforemost/models/note.dart';
@@ -14,7 +16,27 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+//es un contador para esperar el llamdo
+class Debouncer {
+  int? milliseconds;
+  VoidCallback? action;
+  Timer? timer;
+
+  run(VoidCallback action) {
+    if (null != timer) {
+      timer!.cancel();
+    }
+    timer = Timer(
+      const Duration(milliseconds: Duration.millisecondsPerSecond),
+      action,
+    );
+  }
+}
+
 class _HomePageState extends State<HomePage> {
+  //variable que realiza el llamdo
+  final _debouncer = Debouncer();
+  //se usan dos list para realizar la busqueda,
   //lista para ordenar
   static const menuItems = <String>[
     'Nota',
@@ -34,6 +56,7 @@ class _HomePageState extends State<HomePage> {
 
   //get lista de notas
   List<Notas> notas = [];
+  List<Notas> notasBuscar = [];
 
   @override
   void initState() {
@@ -42,11 +65,24 @@ class _HomePageState extends State<HomePage> {
   }
 
   cargaNotas(String orderBy) async {
-    List<Notas> auxNotas = await SqliteService.notas(orderBy);
+    //funcion para ordenar todo
 
-    setState(() {
-      notas = auxNotas;
-    });
+    if (orderBy == 'Nota') {
+      print(orderBy);
+      List<Notas> auxNotas = await SqliteService.notas('nombreNota');
+
+      setState(() {
+        notas = auxNotas;
+        notasBuscar = notas;
+      });
+    } else {
+      List<Notas> auxNotas = await SqliteService.notas(orderBy);
+
+      setState(() {
+        notas = auxNotas;
+        notasBuscar = notas;
+      });
+    }
   }
 
   final GlobalKey<ScaffoldState> _key = GlobalKey();
@@ -70,6 +106,7 @@ class _HomePageState extends State<HomePage> {
             SizedBox(
               height: height * 0.03,
             ),
+            //texfil para buscar nota
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: TextFormField(
@@ -81,11 +118,23 @@ class _HomePageState extends State<HomePage> {
                         borderRadius: BorderRadius.circular(20)),
                     labelText: 'Buscar Nota',
                     hintText: 'Buscar Nota'),
+                onChanged: ((value) {
+                  _debouncer.run(() {
+                    setState(() {
+                      notas = notasBuscar
+                          .where((element) => (element.nombreNota
+                              .toLowerCase()
+                              .contains(value.toLowerCase())))
+                          .toList();
+                    });
+                  });
+                }),
               ),
             ),
             SizedBox(
               height: height * 0.03,
             ),
+            //selecc ordenar por
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
@@ -123,7 +172,7 @@ class _HomePageState extends State<HomePage> {
                 itemCount: notas.length,
                 itemBuilder: ((context, index) {
                   return ListTile(
-                    leading: Text("$index"),
+                    //leading: Text(notas[index].id.toString()),
                     subtitle: Text(notas[index].fecha),
                     trailing: MaterialButton(
                       color: Colors.green,
