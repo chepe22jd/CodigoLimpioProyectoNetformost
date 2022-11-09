@@ -247,6 +247,9 @@ class _NewNotePageState extends State<NewNotePage> {
                   style: const TextStyle(fontSize: 20, color: Colors.white),
                 ),
               ),
+              SizedBox(
+                height: height * 0.05,
+              ),
             ],
           ),
         ),

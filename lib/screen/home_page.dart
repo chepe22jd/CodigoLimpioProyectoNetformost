@@ -190,7 +190,7 @@ class _HomePageState extends State<HomePage> {
             ),
             //
             SizedBox(
-              height: height * 0.6,
+              height: height * 0.55,
               width: width * 0.9,
               //Lista de notas escritas.
               child: ListView.builder(
@@ -221,6 +221,9 @@ class _HomePageState extends State<HomePage> {
                   );
                 }),
               ),
+            ),
+            SizedBox(
+              height: height * 0.01,
             ),
           ],
         ),
