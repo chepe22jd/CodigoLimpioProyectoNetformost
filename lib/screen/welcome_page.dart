@@ -3,16 +3,16 @@ import 'package:codigolimpionetforemost/screen/home_page.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
-//paguina principal de la aplicacion
+//Paguina inicial de Bienvenida.
   @override
   Widget build(BuildContext context) {
-    //variables para optener los size screen
+    //Variables para obtener los Size Screen.
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Stack(
         children: [
-          //color de fondo para
+          //Color de fondo para la pantalla.
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -22,13 +22,14 @@ class WelcomePage extends StatelessWidget {
               ),
             ),
           ),
+          //
           Center(
             child: Column(
               children: [
                 SizedBox(
                   height: height * 0.20,
                 ),
-                //Nota de bienvenida
+                //Nota de bienvenida.
                 const Padding(
                   padding: EdgeInsets.only(left: 40, right: 40),
                   child: Text(
@@ -43,7 +44,7 @@ class WelcomePage extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                //imagen demostrativa
+                //Imagen demostrativa.
                 Image.asset(
                   'assets/lista.png',
                   height: height * 0.40,
@@ -52,16 +53,16 @@ class WelcomePage extends StatelessWidget {
                 SizedBox(
                   height: height * 0.03,
                 ),
-                //boton para paguina principal
+                //Boton para pagina principal.
                 ElevatedButton(
                   onPressed: () {
-                    //uso de push para no retorno
+                    //Uso de push para no retornar a la pantalla de welcome.
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => const HomePage()),
                     );
                   },
-                  //detalle para button
+                  //Detalles de estilo para button.
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(
@@ -77,7 +78,7 @@ class WelcomePage extends StatelessWidget {
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );

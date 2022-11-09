@@ -3,39 +3,39 @@ import 'package:flutter/material.dart';
 import 'package:codigolimpionetforemost/models/note.dart';
 import 'package:codigolimpionetforemost/services/db.dart';
 
-import 'package:codigolimpionetforemost/widgets/appbar.dart';
-import 'package:codigolimpionetforemost/widgets/drawer_appbar.dart';
+import 'package:codigolimpionetforemost/utils/appbar.dart';
+import 'package:codigolimpionetforemost/utils/drawer_appbar.dart';
 
+//Paguina para agregar o actualizar notas.
+//
 class NewNotePage extends StatefulWidget {
   //Obtener datos para paguina de edicion.
   const NewNotePage(
       {super.key,
       this.id,
-      required this.nombreNota,
-      required this.fecha,
-      required this.nota});
+      required this.nameNote,
+      required this.date,
+      required this.note});
 
   final int? id;
-  final String nombreNota;
-  final String fecha;
-  final String nota;
+  final String nameNote;
+  final String date;
+  final String note;
 
   @override
   State<NewNotePage> createState() => _NewNotePageState();
 }
 
-//paguina para añadir nuevas notas
 class _NewNotePageState extends State<NewNotePage> {
+  //Llave para ScaffoldState
   final GlobalKey<ScaffoldState> _key = GlobalKey();
 
-  //fecha controller
+  //Controller para TextForm Date.
   final dateController = TextEditingController();
-  //nombre nota controller
+  //Controller para TextForm Nombre Nota
   final controllerNombreNota = TextEditingController();
-  //nota controller
+  //Controller para TextForm Nota
   final controllerNota = TextEditingController();
-
-  //formato inicial
 
   @override
   void dispose() {
@@ -43,16 +43,16 @@ class _NewNotePageState extends State<NewNotePage> {
     super.dispose();
   }
 
-//inicio estado para los text
+//Inicio estado para los TextFrom
   @override
   void initState() {
-    controllerNombreNota.text = widget.nombreNota;
-    controllerNota.text = widget.nota;
-    dateController.text = widget.fecha;
+    controllerNombreNota.text = widget.nameNote;
+    controllerNota.text = widget.note;
+    dateController.text = widget.date;
     super.initState();
   }
 
-  //selecionar fecha
+  //Selecionar fecha
   DateTime selectedDate = DateTime.now();
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -68,34 +68,45 @@ class _NewNotePageState extends State<NewNotePage> {
     }
   }
 
-  //validator forem key
+  //Validator de Form
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    //variables para optener los size screen
-//    double width = MediaQuery.of(context).size.width;
-// ancho no se usa
+    //Variables para obtener los Size Screen.
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
+      //LLave del Scaffold.
       key: _key,
-      //drawer barr y app bar desde carpeta de widgets
-      drawer: drawerAppBarMenu(context),
-      appBar: appBarCode(context, _key),
-      //body principal
+      drawer: drawerAppBarMenu(context), //Drawer desde la caperta de utils.
+      appBar: appBarCode(context, _key), //Appbar desde la caperta de utils.
+      //Body principal.
       body: SingleChildScrollView(
         child: Form(
-          //llave para vlidador del Form
+          //Llave para vlidador del Form.
           key: _formKey,
           child: Column(
             children: [
               SizedBox(
-                height: height * 0.03,
+                height: height * 0.01,
               ),
+
+              Text(
+                widget.nameNote == '' ? 'Nueva Nota' : 'Actualizar Nota',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 20,
+                  color: Colors.black,
+                ),
+              ),
+              SizedBox(
+                height: height * 0.01,
+              ),
+
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TextFormField(
-                  //validador para que user escriba nota
+                  //Validador para que Usuario escriba nota.
                   controller: controllerNombreNota,
                   validator: (text) {
                     if (text == null || text.isEmpty) {
@@ -116,20 +127,20 @@ class _NewNotePageState extends State<NewNotePage> {
               SizedBox(
                 height: height * 0.03,
               ),
+              //
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TextFormField(
-                  //oculta teclado
                   showCursor: true,
                   readOnly: true,
-                  //validador de fechas
+                  //Validador de fechas.
                   validator: (text) {
                     if (text == null || text.isEmpty) {
                       return 'Seleccione una fecha';
                     }
                     return null;
                   },
-                  //seleciona el widget de fecha
+                  //Seleciona el widget para fecha.
                   onTap: () async {
                     _selectDate(context);
                   },
@@ -145,10 +156,11 @@ class _NewNotePageState extends State<NewNotePage> {
               SizedBox(
                 height: height * 0.03,
               ),
+              //
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TextFormField(
-                  //validador para que user escriba nota
+                  //Validador para que Usuario escriba nota.
                   validator: (text) {
                     if (text == null || text.isEmpty) {
                       return 'Ingrese su nota porfavor';
@@ -158,7 +170,7 @@ class _NewNotePageState extends State<NewNotePage> {
                     }
                     return null;
                   },
-                  //aumentar el tamaño del text
+                  //Aumenta el tamaño del text.
                   maxLines: 15,
                   keyboardType: TextInputType.multiline,
                   controller: controllerNota,
@@ -172,48 +184,48 @@ class _NewNotePageState extends State<NewNotePage> {
               SizedBox(
                 height: height * 0.03,
               ),
-              //boton guarda nota
+              //Boton para guarda nota.
               ElevatedButton(
                 onPressed: () async {
-                  //validar datos no basios
+                  //Validar datos no vacios.
                   if (_formKey.currentState!.validate()) {
                     if (widget.id! > -1) {
-                      ///actializa datos
+                      //Actializa datos.
                       SqliteService.update(
-                        Notas(
+                        Notes(
                             id: widget.id,
-                            nombreNota: controllerNombreNota.text,
-                            fecha: selectedDate.toString().substring(0, 10),
-                            nota: controllerNota.text),
+                            nameNote: controllerNombreNota.text,
+                            date: selectedDate.toString().substring(0, 10),
+                            note: controllerNota.text),
                       );
-                      //nota para validar actualizacion
+                      //Nota para validar actualización.
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text("Nota actualizada"),
                         ),
                       );
-                      //limpia textos
+                      //Limpia textos.
                       cleanTextfield();
-                      //Ir a paguina principal
+                      //Ir a paguina principal.
                       Navigator.pushNamed(context, '/homepage');
                     }
-                    //guarda un nuevo dato
+                    //Guarda un nuevo dato.
                     else {
                       SqliteService.insert(
-                        Notas(
-                            nombreNota: controllerNombreNota.text,
-                            fecha: selectedDate.toString().substring(0, 10),
-                            nota: controllerNota.text),
+                        Notes(
+                            nameNote: controllerNombreNota.text,
+                            date: selectedDate.toString().substring(0, 10),
+                            note: controllerNota.text),
                       );
-                      //nota para validar nueva nota
+                      //Nota para validar nueva nota.
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text("Nota agreada"),
                         ),
                       );
-                      //limpia textos
+                      //Limpia textos.
                       cleanTextfield();
-                      //Ir a paguina principal
+                      //Ir a paguina principal.
                       Navigator.pushNamed(context, '/homepage');
                     }
                   } else {
@@ -221,7 +233,7 @@ class _NewNotePageState extends State<NewNotePage> {
                     return;
                   }
                 },
-                //estilo de botton
+                //Estilo para el botton.
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green[400],
                   padding:
@@ -230,9 +242,9 @@ class _NewNotePageState extends State<NewNotePage> {
                     borderRadius: BorderRadius.circular(18.0),
                   ),
                 ),
-                child: const Text(
-                  'Guardar nota',
-                  style: TextStyle(fontSize: 20, color: Colors.white),
+                child: Text(
+                  widget.nameNote == '' ? 'Guardar Nota' : 'Actualizar Nota',
+                  style: const TextStyle(fontSize: 20, color: Colors.white),
                 ),
               ),
             ],
@@ -242,6 +254,7 @@ class _NewNotePageState extends State<NewNotePage> {
     );
   }
 
+//Funcion para limpiar texto.
   void cleanTextfield() {
     controllerNombreNota.clear();
     controllerNota.clear();

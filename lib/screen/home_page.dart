@@ -1,22 +1,22 @@
+import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:flutter/material.dart';
-
+import 'package:codigolimpionetforemost/services/db.dart';
 import 'package:codigolimpionetforemost/models/note.dart';
 import 'package:codigolimpionetforemost/screen/newnote_page.dart';
-import 'package:codigolimpionetforemost/services/db.dart';
 
-import 'package:codigolimpionetforemost/widgets/appbar.dart';
-import 'package:codigolimpionetforemost/widgets/drawer_appbar.dart';
+import 'package:codigolimpionetforemost/utils/appbar.dart';
+import 'package:codigolimpionetforemost/utils/drawer_appbar.dart';
 
+//Paguina principal
+//
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
-
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
-//es un contador para esperar el llamdo
+//Es un contador para esperar el llamado por la funcion de buscar
 class Debouncer {
   int? milliseconds;
   VoidCallback? action;
@@ -34,16 +34,16 @@ class Debouncer {
 }
 
 class _HomePageState extends State<HomePage> {
-  //variable que realiza el llamdo
+  //Variable que realiza el llamado del contador
   final _debouncer = Debouncer();
-  //se usan dos list para realizar la busqueda,
-  //lista para ordenar
+  //Se usan 2 List para realizar la busqueda,
+  //Lista para ordenar
   static const menuItems = <String>[
     'Nota',
     'Fecha',
   ];
 
-  //optener
+  //Obtener los datos para el DropDowmMenu
   final List<DropdownMenuItem<String>> _dropDownMenuItems = menuItems
       .map(
         (String value) => DropdownMenuItem<String>(
@@ -55,60 +55,80 @@ class _HomePageState extends State<HomePage> {
 
   String _btnSelect = 'Nota';
 
-  //get lista de notas
-  List<Notas> notas = [];
-  List<Notas> notasBuscar = [];
+  //Obtener lista de notas.
+  List<Notes> notas = [];
+  List<Notes> notasBuscar = [];
 
+//Manda a llamar en el initState la funcion cargaNotas para ver las notas como lista desde
+//el inicio
   @override
   void initState() {
     cargaNotas(_btnSelect);
     super.initState();
   }
 
+//Funcion para cargar notas
   cargaNotas(String orderBy) async {
-    //funcion para ordenar todo
+    //Funcion if para validar el tipo de DrownDowm selecionado.
     if (orderBy == 'Nota') {
-      List<Notas> auxNotas = await SqliteService.notas('nombreNota');
-      setState(() {
-        notas = auxNotas;
-        notasBuscar = notas;
-      });
-    } else {
-      List<Notas> auxNotas = await SqliteService.notas(orderBy);
-      setState(() {
-        notas = auxNotas;
-        notasBuscar = notas;
-      });
+      List<Notes> auxNotas = await SqliteService.notas('nameNote');
+      setState(
+        () {
+          notas = auxNotas;
+          notasBuscar = notas;
+        },
+      );
+    } else if (orderBy == 'Fecha') {
+      List<Notes> auxNotas = await SqliteService.notas('date');
+      setState(
+        () {
+          notas = auxNotas;
+          notasBuscar = notas;
+        },
+      );
     }
   }
 
-  //llave para controlar el scafoldstate
+  //Llave para controlar el ScafoldState.
   final GlobalKey<ScaffoldState> _key = GlobalKey();
 
-  //nombre nota controller
+  //Controller para el TextFormField.
   final TextEditingController _controllerBuscar = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    //variables para optener los size screen
+    //Variables para obtener los Size Screen.
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      //LLave del Scaffold.
       key: _key,
-      drawer: drawerAppBarMenu(context),
-      appBar: appBarCode(context, _key),
+      drawer: drawerAppBarMenu(context), //Drawer desde la caperta de utils.
+      appBar: appBarCode(context, _key), //Appbar desde la caperta de utils.
+      //Body principal.
       body: SingleChildScrollView(
         child: Column(
           children: [
             SizedBox(
-              height: height * 0.03,
+              height: height * 0.01,
             ),
-            //texfil para buscar nota
+            const Text(
+              'Lista de notas',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.black,
+              ),
+            ),
+            SizedBox(
+              height: height * 0.01,
+            ),
+            //TextFormField para buscar nota.
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: TextFormField(
-                //validador para que user escriba nota
+                //Validador para que usuario escriba nota.
                 controller: _controllerBuscar,
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(
@@ -117,10 +137,12 @@ class _HomePageState extends State<HomePage> {
                     labelText: 'Buscar Nota',
                     hintText: 'Buscar Nota'),
                 onChanged: ((value) {
+                  //Si escriben algo mandar a llamar el contador, y la funcion de buscar por
+                  //texto escrito.
                   _debouncer.run(() {
                     setState(() {
                       notas = notasBuscar
-                          .where((element) => (element.nombreNota
+                          .where((element) => (element.nameNote
                               .toLowerCase()
                               .contains(value.toLowerCase())))
                           .toList();
@@ -130,9 +152,9 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             SizedBox(
-              height: height * 0.03,
+              height: height * 0.01,
             ),
-            //selecc ordenar por
+            //Seleccion para ordenar por.
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
@@ -144,9 +166,12 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(
                     width: 20,
                   ),
+                  //Valores a selecionar.
                   DropdownButton(
                     value: _btnSelect,
                     onChanged: (String? newValue) {
+                      //Manda a llamar la funcion buscar notas para el listview,
+                      //actualiza el estado de la pantalla.
                       if (newValue != null) {
                         setState(() {
                           _btnSelect = newValue;
@@ -163,15 +188,19 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
+            //
             SizedBox(
               height: height * 0.6,
               width: width * 0.9,
+              //Lista de notas escritas.
               child: ListView.builder(
                 itemCount: notas.length,
                 itemBuilder: ((context, index) {
+                  //Datos a mostar
                   return ListTile(
-                    //leading: Text(notas[index].id.toString()),
-                    subtitle: Text(notas[index].fecha),
+                    subtitle: Text(notas[index].date),
+                    //Botton lado izquierdo para editar nota selecionada o mostrar
+                    //datos de la nota.
                     trailing: MaterialButton(
                       color: Colors.green,
                       onPressed: () {
@@ -180,15 +209,15 @@ class _HomePageState extends State<HomePage> {
                           MaterialPageRoute(
                             builder: (context) => NewNotePage(
                                 id: notas[index].id,
-                                nombreNota: notas[index].nombreNota,
-                                fecha: notas[index].fecha,
-                                nota: notas[index].nota),
+                                nameNote: notas[index].nameNote,
+                                date: notas[index].date,
+                                note: notas[index].nameNote),
                           ),
                         );
                       },
                       child: const Icon(Icons.edit),
                     ),
-                    title: Text(notas[index].nombreNota),
+                    title: Text(notas[index].nameNote),
                   );
                 }),
               ),

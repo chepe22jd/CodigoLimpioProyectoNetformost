@@ -1,17 +1,17 @@
 // To parse this JSON data, do
-class Notas {
+class Notes {
   int? id;
-  String nombreNota;
-  String fecha;
-  String nota;
+  String nameNote;
+  String date;
+  String note;
 
-  Notas(
+  Notes(
       {this.id,
-      required this.nombreNota,
-      required this.fecha,
-      required this.nota});
+      required this.nameNote,
+      required this.date,
+      required this.note});
 
   Map<String, dynamic> toMap() {
-    return {'id': id, 'nombreNota': nombreNota, 'fecha': fecha, 'nota': nota};
+    return {'id': id, 'nameNote': nameNote, 'date': date, 'note': note};
   }
 }

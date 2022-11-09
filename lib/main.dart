@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => const WelcomePage(),
         '/homepage': (context) => const HomePage(),
         //'/newnote': (context) => const NewNotePage(),
-        '/creadopor': (context) => const CreateByPage(),
+        '/createby': (context) => const CreateByPage(),
       },
     );
   }

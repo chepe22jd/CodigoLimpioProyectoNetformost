@@ -1,61 +1,56 @@
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
-
 import 'package:codigolimpionetforemost/models/note.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
 
+//Este metódo que esta basado con la libreria de SQLite,
+//y solo es soportada para dispositivos Android, IOS y MacOs.
 class SqliteService {
+  //Abre y crea base de datos en SQLite.
   static Future<Database> _openDB() async {
-    return openDatabase(join(await getDatabasesPath(), 'nota_database.db'),
+    return openDatabase(join(await getDatabasesPath(), 'note_database.db'),
         onCreate: (db, version) {
+      //Crea la base de datos.
       return db.execute(
-        "CREATE TABLE notas (id INTEGER PRIMARY KEY AUTOINCREMENT, nombreNota TEXT, fecha TEXT, nota TEXT)",
+        "CREATE TABLE notes (id INTEGER PRIMARY KEY AUTOINCREMENT, nameNote TEXT, date TEXT, note TEXT)",
       );
     }, version: 1);
   }
 
-  static Future<Future<int>> insert(Notas notas) async {
+//Metódo para insertar datos en la database notas.
+  static Future<Future<int>> insert(Notes notas) async {
+    //Manda a llamar a la database.
     Database database = await _openDB();
-
-    return database.insert("notas", notas.toMap());
+    //Inserta los datos en la db.
+    return database.insert("notes", notas.toMap());
   }
 
-  static Future<Future<int>> update(Notas notas) async {
+//Metódo para actualizar datos,
+  static Future<Future<int>> update(Notes notas) async {
+    //Manda a llamar a la database.
     Database database = await _openDB();
-
-    return database
-        .update("notas", notas.toMap(), where: "id = ?", whereArgs: [notas.id]);
+    //Actualiza los datos segun "ID" de la database notas.
+    return database.update(
+      "notes",
+      notas.toMap(),
+      where: "id = ?",
+      whereArgs: [notas.id],
+    );
   }
 
-  static Future<List<Notas>> notas(String orderByX) async {
+  static Future<List<Notes>> notas(String orderByX) async {
+    //Manda a llamar a la database y ordena por X valor(notas o fechas).
     Database database = await _openDB();
     final List<Map<String, dynamic>> notasMap = await database.query(
-      "notas",
+      "notes",
       orderBy: orderByX,
     );
-
+    //Genera una lista con los datos obtenidos.
     return List.generate(
         notasMap.length,
-        (i) => Notas(
+        (i) => Notes(
             id: notasMap[i]['id'],
-            nombreNota: notasMap[i]['nombreNota'],
-            fecha: notasMap[i]['fecha'],
-            nota: notasMap[i]['nota']));
-  }
-
-  static Future<List<Notas>> notasBuscar(
-      String orderByX, String keyword) async {
-    Database database = await _openDB();
-    final List<Map<String, dynamic>> notasMap = await database.query("notas",
-        orderBy: orderByX,
-        where: 'nombreNota LIKE ?',
-        whereArgs: ['%$keyword%']);
-
-    return List.generate(
-        notasMap.length,
-        (i) => Notas(
-            id: notasMap[i]['id'],
-            nombreNota: notasMap[i]['nombreNota'],
-            fecha: notasMap[i]['fecha'],
-            nota: notasMap[i]['nota']));
+            nameNote: notasMap[i]['nameNote'],
+            date: notasMap[i]['date'],
+            note: notasMap[i]['note']));
   }
 }
