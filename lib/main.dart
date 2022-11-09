@@ -1,8 +1,8 @@
-import 'package:codigolimpionetforemost/screen/creadopor_page.dart';
-import 'package:codigolimpionetforemost/screen/home_page.dart';
-import 'package:codigolimpionetforemost/screen/newnote_page.dart';
-import 'package:codigolimpionetforemost/screen/welcome_page.dart';
 import 'package:flutter/material.dart';
+
+import 'package:codigolimpionetforemost/screen/createby_page.dart';
+import 'package:codigolimpionetforemost/screen/home_page.dart';
+import 'package:codigolimpionetforemost/screen/welcome_page.dart';
 
 void main() => runApp(const MyApp());
 
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => const WelcomePage(),
         '/homepage': (context) => const HomePage(),
         //'/newnote': (context) => const NewNotePage(),
-        '/creadopor': (context) => const CreadoPorPage(),
+        '/creadopor': (context) => const CreateByPage(),
       },
     );
   }

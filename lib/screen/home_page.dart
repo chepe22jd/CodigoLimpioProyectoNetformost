@@ -43,6 +43,7 @@ class _HomePageState extends State<HomePage> {
     'Fecha',
   ];
 
+  //optener
   final List<DropdownMenuItem<String>> _dropDownMenuItems = menuItems
       .map(
         (String value) => DropdownMenuItem<String>(
@@ -66,18 +67,14 @@ class _HomePageState extends State<HomePage> {
 
   cargaNotas(String orderBy) async {
     //funcion para ordenar todo
-
     if (orderBy == 'Nota') {
-      print(orderBy);
       List<Notas> auxNotas = await SqliteService.notas('nombreNota');
-
       setState(() {
         notas = auxNotas;
         notasBuscar = notas;
       });
     } else {
       List<Notas> auxNotas = await SqliteService.notas(orderBy);
-
       setState(() {
         notas = auxNotas;
         notasBuscar = notas;
@@ -85,6 +82,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  //llave para controlar el scafoldstate
   final GlobalKey<ScaffoldState> _key = GlobalKey();
 
   //nombre nota controller

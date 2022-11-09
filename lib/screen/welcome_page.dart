@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-
 import 'package:codigolimpionetforemost/screen/home_page.dart';
-
-import 'package:codigolimpionetforemost/widgets/backgroundcolor.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
-
+//paguina principal de la aplicacion
   @override
   Widget build(BuildContext context) {
     //variables para optener los size screen
@@ -15,8 +12,16 @@ class WelcomePage extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          //color de fondo
-          const BackGroundColor(),
+          //color de fondo para
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Colors.green, Colors.white],
+              ),
+            ),
+          ),
           Center(
             child: Column(
               children: [
@@ -41,6 +46,7 @@ class WelcomePage extends StatelessWidget {
                 //imagen demostrativa
                 Image.asset(
                   'assets/lista.png',
+                  height: height * 0.40,
                   width: width * 0.50,
                 ),
                 SizedBox(
@@ -55,6 +61,7 @@ class WelcomePage extends StatelessWidget {
                       MaterialPageRoute(builder: (context) => const HomePage()),
                     );
                   },
+                  //detalle para button
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(

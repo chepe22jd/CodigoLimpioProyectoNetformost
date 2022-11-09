@@ -4,22 +4,23 @@ import 'package:codigolimpionetforemost/widgets/appbar.dart';
 import 'package:codigolimpionetforemost/widgets/drawer_appbar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class CreadoPorPage extends StatelessWidget {
-  const CreadoPorPage({super.key});
+class CreateByPage extends StatelessWidget {
+  const CreateByPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final Uri _urlMyGithub = Uri.parse('https://github.com/chepe22jd');
-
-    final Uri _urlInstagram = Uri.parse('https://www.instagram.com/chepe11jd/');
-
-    final GlobalKey<ScaffoldState> _key = GlobalKey();
+    //variales de URL y mandar a la funcion lauchURL y ver dicho website
+    final Uri urlMyGithub = Uri.parse('https://github.com/chepe22jd');
+    final Uri urlInstagram = Uri.parse('https://www.instagram.com/chepe11jd/');
+    //llave para controlar el scafoldstate
+    final GlobalKey<ScaffoldState> key = GlobalKey();
+    //variables para optener los size screen
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
-      key: _key,
-      drawer: drawerAppBarMenu(context),
-      appBar: appBarCode(context, _key),
+      key: key,
+      drawer: drawerAppBarMenu(context), //drawer desde la caperta de widgets
+      appBar: appBarCode(context, key), //appbar desde la caperta de widgets
       body: Center(
         child: Column(
           children: [
@@ -50,10 +51,12 @@ class CreadoPorPage extends StatelessWidget {
             ),
             Center(
               child: InkWell(
-                onTap: () => launchUrl(_urlMyGithub),
+                //tap para llamar los url
+                onTap: () => launchUrl(urlMyGithub),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    //imagen para la parte de github
                     Image.asset(
                       'assets/github.png',
                       width: width * 0.10,
@@ -78,10 +81,12 @@ class CreadoPorPage extends StatelessWidget {
             ),
             Center(
                 child: InkWell(
-              onTap: () => launchUrl(_urlInstagram),
+              //lanzar url de instagram
+              onTap: () => launchUrl(urlInstagram),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  //imagen para parte de instagram
                   Image.asset(
                     'assets/instagram.png',
                     width: width * 0.10,

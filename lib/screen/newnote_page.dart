@@ -1,12 +1,13 @@
+import 'package:flutter/material.dart';
+
 import 'package:codigolimpionetforemost/models/note.dart';
 import 'package:codigolimpionetforemost/services/db.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import 'package:codigolimpionetforemost/widgets/appbar.dart';
 import 'package:codigolimpionetforemost/widgets/drawer_appbar.dart';
 
 class NewNotePage extends StatefulWidget {
+  //Obtener datos para paguina de edicion.
   const NewNotePage(
       {super.key,
       this.id,
@@ -23,6 +24,7 @@ class NewNotePage extends StatefulWidget {
   State<NewNotePage> createState() => _NewNotePageState();
 }
 
+//paguina para añadir nuevas notas
 class _NewNotePageState extends State<NewNotePage> {
   final GlobalKey<ScaffoldState> _key = GlobalKey();
 
@@ -38,10 +40,10 @@ class _NewNotePageState extends State<NewNotePage> {
   @override
   void dispose() {
     dateController.dispose();
-
     super.dispose();
   }
 
+//inicio estado para los text
   @override
   void initState() {
     controllerNombreNota.text = widget.nombreNota;
@@ -72,22 +74,18 @@ class _NewNotePageState extends State<NewNotePage> {
   @override
   Widget build(BuildContext context) {
     //variables para optener los size screen
-    double width = MediaQuery.of(context).size.width;
+//    double width = MediaQuery.of(context).size.width;
+// ancho no se usa
     double height = MediaQuery.of(context).size.height;
-
-    //formato para la fecha
-    var now = DateTime.now();
-    var formatter = DateFormat('dd-MM-yyyy');
-    String formattedDate = formatter.format(now);
-
-    //formato de fecha
-//    dateController.text = selectedDate.toString().substring(0, 10);
     return Scaffold(
       key: _key,
+      //drawer barr y app bar desde carpeta de widgets
       drawer: drawerAppBarMenu(context),
       appBar: appBarCode(context, _key),
+      //body principal
       body: SingleChildScrollView(
         child: Form(
+          //llave para vlidador del Form
           key: _formKey,
           child: Column(
             children: [
@@ -98,7 +96,6 @@ class _NewNotePageState extends State<NewNotePage> {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TextFormField(
                   //validador para que user escriba nota
-
                   controller: controllerNombreNota,
                   validator: (text) {
                     if (text == null || text.isEmpty) {
@@ -125,17 +122,17 @@ class _NewNotePageState extends State<NewNotePage> {
                   //oculta teclado
                   showCursor: true,
                   readOnly: true,
+                  //validador de fechas
                   validator: (text) {
                     if (text == null || text.isEmpty) {
                       return 'Seleccione una fecha';
                     }
-
                     return null;
                   },
+                  //seleciona el widget de fecha
                   onTap: () async {
                     _selectDate(context);
                   },
-
                   controller: dateController,
                   keyboardType: TextInputType.datetime,
                   decoration: InputDecoration(
@@ -161,8 +158,8 @@ class _NewNotePageState extends State<NewNotePage> {
                     }
                     return null;
                   },
+                  //aumentar el tamaño del text
                   maxLines: 15,
-
                   keyboardType: TextInputType.multiline,
                   controller: controllerNota,
                   decoration: InputDecoration(
@@ -189,10 +186,15 @@ class _NewNotePageState extends State<NewNotePage> {
                             fecha: selectedDate.toString().substring(0, 10),
                             nota: controllerNota.text),
                       );
-
+                      //nota para validar actualizacion
                       ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Nota actualizada")));
+                        const SnackBar(
+                          content: Text("Nota actualizada"),
+                        ),
+                      );
+                      //limpia textos
                       cleanTextfield();
+                      //Ir a paguina principal
                       Navigator.pushNamed(context, '/homepage');
                     }
                     //guarda un nuevo dato
@@ -203,9 +205,15 @@ class _NewNotePageState extends State<NewNotePage> {
                             fecha: selectedDate.toString().substring(0, 10),
                             nota: controllerNota.text),
                       );
+                      //nota para validar nueva nota
                       ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Nota agreada")));
+                        const SnackBar(
+                          content: Text("Nota agreada"),
+                        ),
+                      );
+                      //limpia textos
                       cleanTextfield();
+                      //Ir a paguina principal
                       Navigator.pushNamed(context, '/homepage');
                     }
                   } else {
@@ -213,6 +221,7 @@ class _NewNotePageState extends State<NewNotePage> {
                     return;
                   }
                 },
+                //estilo de botton
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green[400],
                   padding:
